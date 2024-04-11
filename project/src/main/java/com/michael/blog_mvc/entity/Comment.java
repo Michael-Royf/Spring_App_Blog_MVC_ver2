@@ -6,8 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,26 +13,19 @@ import java.util.Set;
 @Setter
 @Builder
 @Entity
-@Table(name = "posts")
-public class Post {
+@Table(name = "comments")
+public class Comment {
     @Id
-    @SequenceGenerator(name = "post_sequence", sequenceName = "post_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "post_sequence")
+    @SequenceGenerator(name = "comment_sequence", sequenceName = "comment_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_sequence")
     private Long id;
 
     @Column(nullable = false)
-    private String title;
-
-    private String url;
-    @Column(name = "short_description",nullable = false)
-    private String shortDescription;
-
-    @Lob
+    private String name;
     @Column(nullable = false)
+    private String email;
     private String content;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private Set<Comment> comments = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created_date")
@@ -43,5 +34,7 @@ public class Post {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 }

@@ -2,3 +2,6 @@ https://ckeditor.com/
 https://cdn-script.com/libraries/jquery/?gad_source=1&gclid=Cj0KCQjwztOwBhD7ARIsAPDKnkAmBta_l0480Y2iOzARvjST-sc_hNMHVp-yrq0AC1txYhS_6zz5RTIaAjXWEALw_wcB
 https://getbootstrap.com/docs/5.0/components/navbar/
 
+
+INSERT INTO roles (id, name) VALUES ('1','ROLE_ADMIN'), ('2','ROLE_GUEST');
+
