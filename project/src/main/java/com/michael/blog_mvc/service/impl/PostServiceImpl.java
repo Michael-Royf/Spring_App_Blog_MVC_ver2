@@ -1,12 +1,15 @@
 package com.michael.blog_mvc.service.impl;
 
 import com.michael.blog_mvc.entity.Post;
+import com.michael.blog_mvc.entity.User;
 import com.michael.blog_mvc.exceptions.payload.PostNotFoundException;
 import com.michael.blog_mvc.payload.request.PostRequest;
 import com.michael.blog_mvc.payload.response.MessageResponse;
 import com.michael.blog_mvc.payload.response.PostResponse;
 import com.michael.blog_mvc.repository.PostRepository;
+import com.michael.blog_mvc.repository.UserRepository;
 import com.michael.blog_mvc.service.PostService;
+import com.michael.blog_mvc.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -23,15 +26,20 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
     private final ModelMapper mapper;
+
 
     @Override
     public PostResponse creatPost(PostRequest postRequest) {
+        String email = SecurityUtils.getCurrentUser().getUsername();
+        User user = userRepository.findUserByEmail(email).get();
         Post post = Post.builder()
                 .title(postRequest.getTitle())
                 .shortDescription(postRequest.getShortDescription())
                 .content(postRequest.getContent())
                 .url(createUrl(postRequest.getTitle()))
+                .createdBy(user)
                 .build();
         post = postRepository.save(post);
         return mapper.map(post, PostResponse.class);
@@ -43,7 +51,7 @@ public class PostServiceImpl implements PostService {
         return postRepository.findAll()
                 .stream()
                 .map(post -> (mapper.map(post, PostResponse.class)))
-          //      .map(post->mapper.map(post.getComments().stream().map()))
+                //      .map(post->mapper.map(post.getComments().stream().map()))
                 .collect(Collectors.toList());
     }
 
@@ -55,11 +63,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
+        String email = SecurityUtils.getCurrentUser().getUsername();
+        User user = userRepository.findUserByEmail(email).get();
         Post post = getPostFromDB(postId);
         post.setTitle(postRequest.getTitle());
         post.setContent(postRequest.getContent());
         post.setShortDescription(postRequest.getShortDescription());
         post.setUrl(createUrl(postRequest.getTitle()));
+        post.setCreatedBy(user);
         return mapper.map(postRepository.save(post), PostResponse.class);
     }
 
@@ -88,7 +99,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResponse> findPostsByUser() {
-        return null;
+        String email = SecurityUtils.getCurrentUser().getUsername();
+        User user = userRepository.findUserByEmail(email).get();
+        List<Post> postByUser = postRepository.findPostByUser(user.getId());
+        return postByUser.stream()
+                .map(post -> mapper.map(post, PostResponse.class))
+                .collect(Collectors.toList());
     }
 
 

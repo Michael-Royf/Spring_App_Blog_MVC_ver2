@@ -2,6 +2,7 @@ package com.michael.blog_mvc.service.impl;
 
 import com.michael.blog_mvc.entity.Comment;
 import com.michael.blog_mvc.entity.Post;
+import com.michael.blog_mvc.entity.User;
 import com.michael.blog_mvc.exceptions.payload.CommentNotFoundException;
 import com.michael.blog_mvc.exceptions.payload.PostNotFoundException;
 import com.michael.blog_mvc.payload.request.CommentRequest;
@@ -9,7 +10,9 @@ import com.michael.blog_mvc.payload.response.CommentResponse;
 import com.michael.blog_mvc.payload.response.MessageResponse;
 import com.michael.blog_mvc.repository.CommentRepository;
 import com.michael.blog_mvc.repository.PostRepository;
+import com.michael.blog_mvc.repository.UserRepository;
 import com.michael.blog_mvc.service.CommentService;
+import com.michael.blog_mvc.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,6 +31,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final ModelMapper mapper;
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -63,6 +67,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentResponse> findCommentByPost() {
-        return null;
+        String email = SecurityUtils.getCurrentUser().getUsername();
+        User user = userRepository.findUserByEmail(email).get();
+        List<Comment> commentsByPost = commentRepository.findCommentsByPost(user.getId());
+        return commentsByPost.stream()
+                .map(comment -> mapper.map(comment, CommentResponse.class))
+                .collect(Collectors.toList());
     }
 }

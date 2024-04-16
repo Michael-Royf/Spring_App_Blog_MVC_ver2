@@ -22,6 +22,11 @@ public class AuthController {
 
     private final UserService userService;
 
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -46,4 +51,7 @@ public class AuthController {
         userService.saveUser(user);
         return "redirect:/register?success";
     }
+
+
+
 }

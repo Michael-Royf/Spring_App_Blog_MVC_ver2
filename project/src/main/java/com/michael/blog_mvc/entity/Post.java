@@ -26,7 +26,7 @@ public class Post {
     private String title;
 
     private String url;
-    @Column(name = "short_description",nullable = false)
+    @Column(name = "short_description", nullable = false)
     private String shortDescription;
 
     @Lob
@@ -35,6 +35,10 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Comment> comments = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
 
     @CreationTimestamp
     @Column(name = "created_date")

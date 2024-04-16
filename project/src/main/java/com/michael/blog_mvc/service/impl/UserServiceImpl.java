@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ModelMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -36,7 +38,7 @@ public class UserServiceImpl implements UserService {
                 .name(request.getFirstName() + " " + request.getLastName())
                 .email(request.getEmail())
                 .roles(Arrays.asList(role))
-                .password(request.getPassword())//TODO: security
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
         user = userRepository.save(user);
