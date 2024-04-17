@@ -6,13 +6,12 @@ import com.michael.blog_mvc.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping
@@ -43,7 +42,6 @@ public class AuthController {
         if (existingUser != null) {
             result.rejectValue("email", null, String.format("User with email: %s already exists", user.getEmail()));
         }
-
         if (result.hasErrors()) {
             model.addAttribute("user", user);
             return "/register";
@@ -52,6 +50,11 @@ public class AuthController {
         return "redirect:/register?success";
     }
 
+    @GetMapping(path = "/register/confirm")
+    public String confirm(@RequestParam("token") String token) {
+        userService.confirmToken(token);
+        return "/blog/confirm";
+    }
 
 
 }

@@ -5,8 +5,7 @@ import com.michael.blog_mvc.payload.response.CommentResponse;
 import com.michael.blog_mvc.payload.response.PostResponse;
 import com.michael.blog_mvc.service.CommentService;
 import com.michael.blog_mvc.service.PostService;
-import com.michael.blog_mvc.util.ROLE;
-import com.michael.blog_mvc.util.SecurityUtils;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -29,13 +28,15 @@ public class PostController {
 
     @GetMapping("/admin/posts")
     public String getAllPosts(Model model) {
-        String role = SecurityUtils.getRole();
-        List<PostResponse> posts = null;
-        if (ROLE.ROLE_ADMIN.name().equals(role)) {
-            posts = postService.findAllPosts();
-        } else {
-            posts = postService.findPostsByUser();
-        }
+
+        List<PostResponse> posts = postService.findAllPosts();
+
+  //      List<PostResponse> posts = null;
+//        if (ROLE.ROLE_ADMIN.name().equals(role)) {
+//            posts = postService.findAllPosts();
+//        } else {
+//            posts = postService.findPostsByUser();
+//        }
         model.addAttribute("posts", posts);
         return "/admin/posts";
     }

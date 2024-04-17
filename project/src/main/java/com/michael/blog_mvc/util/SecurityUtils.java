@@ -1,29 +1,16 @@
 package com.michael.blog_mvc.util;
 
-
-
-import org.springframework.security.core.GrantedAuthority;
+import com.michael.blog_mvc.entity.User;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-
-import java.util.Collection;
 
 public class SecurityUtils {
 
-    public  static User getCurrentUser(){
+    public static User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof User){
+        if (principal instanceof User) {
             return (User) principal;
         }
         return null;
     }
 
-    public static String getRole(){
-        User user = getCurrentUser();
-        Collection<GrantedAuthority> authorities = user.getAuthorities();
-        for(GrantedAuthority authority: authorities){
-            return authority.getAuthority();
-        }
-        return null;
-    }
 }

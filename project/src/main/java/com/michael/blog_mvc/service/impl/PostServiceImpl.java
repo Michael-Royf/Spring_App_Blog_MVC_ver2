@@ -32,8 +32,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse creatPost(PostRequest postRequest) {
-        String email = SecurityUtils.getCurrentUser().getUsername();
-        User user = userRepository.findUserByEmail(email).get();
+        String username= SecurityUtils.getCurrentUser().getUsername();
+        User user = userRepository.findUserByUsername(username).get();
         Post post = Post.builder()
                 .title(postRequest.getTitle())
                 .shortDescription(postRequest.getShortDescription())

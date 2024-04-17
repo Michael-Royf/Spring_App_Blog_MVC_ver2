@@ -5,3 +5,11 @@ https://getbootstrap.com/docs/5.0/components/navbar/
 
 INSERT INTO roles (id, name) VALUES ('1','ROLE_ADMIN'), ('2','ROLE_GUEST');
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "roles_id", referencedColumnName = "id")}
+    )
+    private List<Role> roles = new ArrayList<>();
+

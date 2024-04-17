@@ -7,8 +7,11 @@ import com.michael.blog_mvc.payload.response.UserResponse;
 import java.util.Optional;
 
 public interface UserService {
-    UserResponse saveUser(RegistrationRequest request);
+    String saveUser(RegistrationRequest request);
 
     Optional<User> findByEmail(String email);
+
+
+    String confirmToken(String token);
 }
 
